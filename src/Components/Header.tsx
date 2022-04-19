@@ -60,12 +60,16 @@ function Header() {
   };
   const underBarVariant = {
     normal: {
-      width: 0,
+      width: "0px",
       opacity: 0,
     },
     action: {
       opacity: 1,
-      width: "20px",
+      width: "25px",
+      height: "2px",
+      transition: {
+        duration: 0.7,
+      },
     },
     exit: {
       width: 0,
@@ -286,6 +290,7 @@ const Input = styled(motion.input)`
   padding: 10px 30px;
   left: -230px;
 `;
+
 export default Header;
 /* align-items: center; */
 /* flex-direction: column; */
