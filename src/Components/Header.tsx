@@ -26,86 +26,15 @@ function Header() {
     }
     setOpenSearch((prev) => !prev);
   };
-  const navVariant = {
-    normal: {
-      backgroundImage:
-        "linear-gradient(to bottom,rgba(0,0,0, .5), rgba(0,0,0,.01))",
-    },
-    action: {
-      backgroundImage:
-        "linear-gradient(to bottom,rgba(0,0,0,1), rgba(0,0,0,1))",
-    },
-  };
-  const mainLogoVariant = {
-    normal: {
-      fill: "#E73118",
-      fillOpacity: 1,
-    },
-    action: {
-      fillOpacity: [0, 1, 0],
-      scale: 1.1,
-      transition: {
-        duration: 2,
-        repeat: Infinity,
-      },
-    },
-  };
-  const itemBtnVariant = {
-    normal: {
-      scale: 1,
-    },
-    action: {
-      scale: 1.2,
-    },
-  };
-  const underBarVariant = {
-    normal: {
-      width: "0px",
-      opacity: 0,
-    },
-    action: {
-      opacity: 1,
-      width: "25px",
-      height: "2px",
-      transition: {
-        duration: 0.7,
-      },
-    },
-    exit: {
-      width: 0,
-      opacity: 0,
-    },
-  };
-  const searchLogoVariant = {
-    normal: {},
-    action: {
-      x: -225,
-      transition: {
-        type: "linear",
-      },
-    },
-  };
-  const searchInputVariant = {
-    normal: {
-      scaleX: 0,
-      transition: {
-        type: "linear",
-      },
-    },
-    action: {
-      scaleX: 1,
-      transition: {
-        type: "linear",
-      },
-    },
-  };
+
   const homeRoute = useMatch("/");
   const tvRoute = useMatch("tv");
   console.log(homeRoute);
   console.log(tvRoute);
   useEffect(() => {
     scrollY.onChange(() => {
-      if (scrollY.get() >= 100) {
+      console.log(scrollY.get());
+      if (scrollY.get() >= 50) {
         navAnimation.start("action");
       } else {
         navAnimation.start("normal");
@@ -121,8 +50,9 @@ function Header() {
           whileHover="action"
           xmlns="http://www.w3.org/2000/svg"
           width={150}
+          fill="#E73118"
           viewBox="0 0 153.51 41.23"
-          // enable-background="new 0 0 153.51 41.23"
+          enableBackground="new 0 0 153.51 41.23"
         >
           <g>
             <g>
@@ -230,6 +160,76 @@ function Header() {
     </Nav>
   );
 }
+const navVariant = {
+  normal: {
+    backgroundImage: "linear-gradient(rgba(0,0,0, .5), rgba(0,0,0,.01))",
+  },
+  action: {
+    backgroundImage: "linear-gradient(rgba(0,0,0,1), rgba(0,0,0,1))",
+  },
+};
+const mainLogoVariant = {
+  normal: {
+    fillOpacity: 1,
+  },
+  action: {
+    fillOpacity: [1, 0, 1],
+    scale: 1.1,
+    transition: {
+      duration: 2,
+      repeat: Infinity,
+    },
+  },
+};
+const itemBtnVariant = {
+  normal: {
+    scale: 1,
+  },
+  action: {
+    scale: 1.2,
+  },
+};
+const underBarVariant = {
+  normal: {
+    width: "0px",
+    opacity: 0,
+  },
+  action: {
+    opacity: 1,
+    width: "25px",
+    height: "2px",
+    transition: {
+      duration: 0.5,
+    },
+  },
+  exit: {
+    width: 0,
+    opacity: 0,
+  },
+};
+const searchLogoVariant = {
+  normal: {},
+  action: {
+    x: -225,
+    transition: {
+      type: "linear",
+    },
+  },
+};
+const searchInputVariant = {
+  normal: {
+    scaleX: 0,
+    transition: {
+      type: "linear",
+    },
+  },
+  action: {
+    scaleX: 1,
+    transition: {
+      type: "linear",
+    },
+  },
+};
 
 const Nav = styled(motion.nav)`
   position: fixed;
