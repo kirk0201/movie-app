@@ -33,6 +33,6 @@ const GET_IMAGE = "https://image.tmdb.org/t/p/w500/ID";
 
 export function movieFetch() {
   return fetch(
-    `${BASE_URL}movie/now_playing?api_key=${API_KEY}&region=kr`
+    `${BASE_URL}movie/now_playing?api_key=${API_KEY}&language=ko-kr`
   ).then((res) => res.json());
 }
