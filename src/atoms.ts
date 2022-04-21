@@ -1,10 +1,13 @@
 import { atom } from "recoil";
 
-export const sliderIndexState = atom<number>({
-  key: "sliderindex",
+export const popularIndexState = atom<number>({
+  key: "popularindex",
   default: 0,
 });
-
+export const nowPlayingIndexState = atom<number>({
+  key: "nowplayingindex",
+  default: 0,
+});
 export const motionLeave = atom<boolean>({
   key: "motionleave",
   default: false,

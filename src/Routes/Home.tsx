@@ -1,4 +1,9 @@
-import { AnimatePresence, motion, useViewportScroll } from "framer-motion";
+import {
+  AnimatePresence,
+  LayoutGroup,
+  motion,
+  useViewportScroll,
+} from "framer-motion";
 import { useEffect } from "react";
 import { useState } from "react";
 import { useQuery } from "react-query";
@@ -6,20 +11,28 @@ import { useMatch, useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import { INowPlaying, movieFetch } from "../api";
-import { motionLeave, slideDirectionBack, sliderIndexState } from "../atoms";
+import {
+  nowPlayingIndexState,
+  popularIndexState,
+  slideDirectionBack,
+} from "../atoms";
 import LeftArrow from "../Components/Common/LeftArrow";
 import RightArrow from "../Components/Common/RightArrow";
 import Banner from "../Components/Home/Banner";
 import MovieModal from "../Components/Home/MovieModal";
 import Slider from "../Components/Home/Slider";
-import { getImagePath, offset } from "../utils";
+import { useFindBigInfoMatch } from "../HOC";
+import { getImagePath, nextSlide, offset } from "../utils";
 
 function Home() {
   // recoil
-
+  const [popularIndex, setPopularIndex] = useRecoilState(popularIndexState);
+  const [nowPlayingIndex, setNowPlayingIndex] =
+    useRecoilState(nowPlayingIndexState);
+  const [back, setBack] = useRecoilState(slideDirectionBack);
   // react-router-dom
   const navigate = useNavigate();
-  const bigInfoMatch = useMatch("movies/:movieId");
+  // const bigInfoMatch = useMatch("movies/:movieId");
   const overlayClickHandler = () => {
     navigate("/");
   };
@@ -28,17 +41,31 @@ function Home() {
   const { scrollY } = useViewportScroll();
 
   // useQuery
-  const { data, isLoading } = useQuery<INowPlaying>(
-    ["movie", "nowplaying"],
-    movieFetch
+  const { data: popular } = useQuery<INowPlaying>(["movies", "popular"], () =>
+    movieFetch("popular")
   );
-  const bigInfoData =
-    bigInfoMatch?.params.movieId &&
-    data?.results.find(
-      (movie) => movie.id + "" === bigInfoMatch.params.movieId
-    );
+  const { data: nowPlaying, isLoading } = useQuery<INowPlaying>(
+    ["movie", "nowplaying"],
+    () => movieFetch("now_playing")
+  );
+  const moviesData = [popular, nowPlaying];
 
-  console.log(data);
+  // const bigInfoData =
+  //   bigInfoMatch?.params.movieId &&
+  //   nowPlaying?.results.find(
+  //     (movie) => movie.id + "" === bigInfoMatch.params.movieId
+  //   );
+  // console.log("bigInfoMatch", bigInfoMatch);
+  const test = useMatch(`movies/:keyword/:movieId`);
+  console.log("test", test);
+
+  // const { bigInfo } = useFindBigInfoMatch("popular");
+  // console.log("big", bigInfo);
+
+  // console.log(popularIndex, nowPlayingIndex);
+  // console.log("bacK", back);
+  // console.log("nowPlaying", nowPlaying);
+  // console.log("popular", popular);
 
   return (
     <Wrapper>
@@ -47,13 +74,37 @@ function Home() {
       ) : (
         <>
           <Banner />
-          <Slider data={data} />
-          <MovieModal
+          <Slider
+            id="popular"
+            data={popular}
+            top={-100}
+            back={back}
+            setBack={setBack}
+            index={popularIndex}
+            setIndex={setPopularIndex}
+          />
+
+          {/* <MovieModal
             scrollY={scrollY}
             bigInfoData={bigInfoData}
             overlayClickHandler={overlayClickHandler}
             bigInfoMatch={bigInfoMatch}
+          /> */}
+          <Slider
+            id="nowplaying"
+            data={nowPlaying}
+            top={300}
+            back={back}
+            setBack={setBack}
+            index={nowPlayingIndex}
+            setIndex={setNowPlayingIndex}
           />
+          {/* <MovieModal
+            scrollY={scrollY}
+            bigInfoData={bigInfoData}
+            overlayClickHandler={overlayClickHandler}
+            bigInfoMatch={bigInfoMatch}
+          /> */}
         </>
       )}
     </Wrapper>

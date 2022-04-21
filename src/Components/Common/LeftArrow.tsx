@@ -1,30 +1,40 @@
 import { motion } from "framer-motion";
+import { useState } from "react";
 import { useQuery } from "react-query";
-import { useRecoilState } from "recoil";
+import { RecoilState, SetterOrUpdater, useRecoilState } from "recoil";
 import styled from "styled-components";
 import { INowPlaying, movieFetch } from "../../api";
-import { motionLeave, slideDirectionBack, sliderIndexState } from "../../atoms";
+import {
+  motionLeave,
+  slideDirectionBack,
+  popularIndexState,
+} from "../../atoms";
 import { offset } from "../../utils";
 import { sliderBtnVariant } from "./RightArrow";
-
-function LeftArrow() {
-  const [leaving, setLeaving] = useRecoilState(motionLeave);
-  const [back, setBack] = useRecoilState(slideDirectionBack);
-  const [sliderIndex, setSliderIndex] = useRecoilState(sliderIndexState);
-  const { data, isLoading } = useQuery<INowPlaying>(
-    ["movie", "nowplaying"],
-    movieFetch
-  );
-  const toggleLeaving = () => setLeaving((prev) => !prev);
+export interface IArrowProp {
+  setIndex: SetterOrUpdater<number>;
+  data?: INowPlaying;
+  setBack: SetterOrUpdater<boolean>;
+  leaving: boolean;
+  toggle: () => void;
+}
+function LeftArrow({ setIndex, data, setBack, leaving, toggle }: IArrowProp) {
+  // const [leaving, setLeaving] = useRecoilState(motionLeave);
+  // const [back, setBack] = useRecoilState(slideDirectionBack);
+  // const { data, isLoading } = useQuery<INowPlaying>(
+  //   ["movie", "nowplaying"],
+  //   () => movieFetch("now_playing")
+  // );
+  // const toggleLeaving = () => setLeaving((prev) => !prev);
   const sliderPrevHandler = () => {
     if (data) {
       if (leaving) return;
-      toggleLeaving();
+      toggle();
       setBack(true);
       const totalMovies = data?.results.length - 1;
       const maxIndex = Math.ceil(totalMovies / offset) - 1;
 
-      setSliderIndex((prev) => (prev === 0 ? maxIndex : prev - 1));
+      setIndex((prev) => (prev === 0 ? maxIndex : prev - 1));
     }
   };
   return (
@@ -65,7 +75,6 @@ const ArrowSvg = styled(motion.svg)`
   width: 5vw;
   height: 5vh;
   top: 130px;
-
   z-index: 100;
   left: 0;
 `;

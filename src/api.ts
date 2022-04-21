@@ -31,8 +31,8 @@ const BASE_URL = "https://api.themoviedb.org/3/";
 // Get Now playing => https://api.themoviedb.org/3/movie/now_playing?api_key=API_KEY&language=en-US&page=1
 const GET_IMAGE = "https://image.tmdb.org/t/p/w500/ID";
 
-export function movieFetch() {
-  return fetch(
-    `${BASE_URL}movie/now_playing?api_key=${API_KEY}&language=ko-kr`
-  ).then((res) => res.json());
+// keyword: top_rated | now_playing | popular | latest | upcoming
+export function movieFetch(keyword: string) {
+  const QUICK_URL = `${BASE_URL}movie/${keyword}?api_key=${API_KEY}&language=ko-kr`;
+  return fetch(QUICK_URL).then((res) => res.json());
 }
