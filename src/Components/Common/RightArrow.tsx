@@ -3,28 +3,40 @@ import styled from "styled-components";
 import { useQuery } from "react-query";
 import { INowPlaying, movieFetch } from "../../api";
 import { offset } from "../../utils";
-import { useRecoilState } from "recoil";
-import { motionLeave, slideDirectionBack, sliderIndexState } from "../../atoms";
+import { SetterOrUpdater, useRecoilState } from "recoil";
+import {
+  motionLeave,
+  slideDirectionBack,
+  popularIndexState,
+} from "../../atoms";
 
-function RightArrow() {
-  const [leaving, setLeaving] = useRecoilState(motionLeave);
-  const [back, setBack] = useRecoilState(slideDirectionBack);
-  const [sliderIndex, setSliderIndex] = useRecoilState(sliderIndexState);
-  const { data, isLoading } = useQuery<INowPlaying>(
-    ["movie", "nowplaying"],
-    movieFetch
-  );
-  const toggleLeaving = () => setLeaving((prev) => !prev);
+export interface IArrowProp {
+  setIndex: SetterOrUpdater<number>;
+  data?: INowPlaying;
+  setBack: SetterOrUpdater<boolean>;
+  leaving: boolean;
+  toggle: () => void;
+}
+
+function RightArrow({ setIndex, data, setBack, leaving, toggle }: IArrowProp) {
+  // const [leaving, setLeaving] = useRecoilState(motionLeave);
+  // const [back, setBack] = useRecoilState(slideDirectionBack);
+  // const [sliderIndex, setSliderIndex] = useRecoilState(popularIndexState);
+  // const { data, isLoading } = useQuery<INowPlaying>(
+  //   ["movie", "nowplaying"],
+  //   () => movieFetch("now_playing")
+  // );
+  // const toggleLeaving = () => setLeaving((prev) => !prev);
 
   const sliderNextHandler = () => {
     if (data) {
       if (leaving) return;
-      toggleLeaving();
+      toggle();
       setBack(false);
       const totalMovies = data?.results.length - 1;
       const maxIndex = Math.ceil(totalMovies / offset) - 1;
 
-      setSliderIndex((prev) => (prev === maxIndex ? 0 : prev + 1));
+      setIndex((prev) => (prev === maxIndex ? 0 : prev + 1));
     }
   };
   return (
@@ -62,20 +74,20 @@ function RightArrow() {
 }
 export const sliderBtnVariant = {
   left: {
-    x: 10,
+    x: 0,
   },
   leftAction: {
-    x: 0,
+    x: -10,
     transition: {
       duration: 0.7,
       repeat: Infinity,
     },
   },
   right: {
-    x: -10,
+    x: 0,
   },
   rightAction: {
-    x: 0,
+    x: 10,
     transition: {
       duration: 0.7,
       repeat: Infinity,

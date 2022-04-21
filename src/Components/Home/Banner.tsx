@@ -10,7 +10,7 @@ function Banner() {
 
   const { data, isLoading } = useQuery<INowPlaying>(
     ["movie", "nowplaying"],
-    movieFetch
+    () => movieFetch("now_playing")
   );
   const splitOverVIewHandler = () => {
     const overView = data?.results[0].overview.replace("...", ".");

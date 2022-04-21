@@ -33,7 +33,6 @@ function Header() {
   console.log(tvRoute);
   useEffect(() => {
     scrollY.onChange(() => {
-      console.log(scrollY.get());
       if (scrollY.get() >= 50) {
         navAnimation.start("action");
       } else {
@@ -240,6 +239,7 @@ const Nav = styled(motion.nav)`
   justify-content: space-between;
   font-size: 14px;
   padding: 20px 60px;
+  z-index: 1000;
 `;
 const Col = styled.div`
   display: flex;

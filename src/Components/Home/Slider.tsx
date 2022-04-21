@@ -1,30 +1,46 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { Navigate, useNavigate } from "react-router-dom";
-import { useRecoilState } from "recoil";
+import { useNavigate } from "react-router-dom";
+import { SetterOrUpdater, useRecoilState } from "recoil";
 import styled from "styled-components";
-import { IMovie, INowPlaying } from "../../api";
-import { motionLeave, slideDirectionBack, sliderIndexState } from "../../atoms";
+import { INowPlaying } from "../../api";
+import { motionLeave } from "../../atoms";
 import { getImagePath, offset } from "../../utils";
 import LeftArrow from "../Common/LeftArrow";
 import RightArrow from "../Common/RightArrow";
 
 interface IDataProp {
   data?: INowPlaying;
+  top: number;
+  back: boolean;
+  index: number;
+  setIndex: SetterOrUpdater<number>;
+  setBack: SetterOrUpdater<boolean>;
+  id: string;
 }
-function Slider({ data }: IDataProp) {
+function Slider({ id, data, top, back, index, setIndex, setBack }: IDataProp) {
   const [leaving, setLeaving] = useRecoilState(motionLeave);
-  const [back, setBack] = useRecoilState(slideDirectionBack);
-  const [sliderIndex, setSliderIndex] = useRecoilState(sliderIndexState);
-
-  const navigate = useNavigate();
   const toggleLeaving = () => setLeaving((prev) => !prev);
-  const movieClickHandler = (movieId: string) => {
-    navigate(`/movies/${movieId}`);
+  const navigate = useNavigate();
+
+  const movieClickHandler = (movieId: string, id: string) => {
+    navigate(`/movies/${id}/${movieId}`);
   };
   return (
-    <Wrapper>
-      <RightArrow />
-      <LeftArrow />
+    <Wrapper top={top}>
+      <RightArrow
+        leaving={leaving}
+        toggle={toggleLeaving}
+        setIndex={setIndex}
+        data={data}
+        setBack={setBack}
+      />
+      <LeftArrow
+        leaving={leaving}
+        toggle={toggleLeaving}
+        setIndex={setIndex}
+        data={data}
+        setBack={setBack}
+      />
       <AnimatePresence onExitComplete={toggleLeaving} custom={back}>
         <Row
           custom={back}
@@ -32,18 +48,19 @@ function Slider({ data }: IDataProp) {
           initial="normal"
           animate="action"
           exit="exit"
-          key={sliderIndex}
+          key={index}
           transition={{ type: "tween", duration: 1 }}
         >
           {data?.results
             .slice(1)
-            .slice(offset * sliderIndex, offset * sliderIndex + offset)
+            .slice(offset * index, offset * index + offset)
             .map((movie) => {
               return (
                 <Movie
-                  layoutId={movie.id + ""}
-                  onClick={() => movieClickHandler(movie.id + "")}
-                  key={movie.id}
+                  layoutId={movie.id + id}
+                  key={movie.id + id}
+                  // onClick={() => movieClickHandler(movie.id + "")}
+                  onClick={() => movieClickHandler(movie.id + "", id)}
                   variants={movieVariant}
                   initial="initial"
                   whileHover="hover"
@@ -102,9 +119,9 @@ const movieVariant = {
     },
   },
 };
-const Wrapper = styled(motion.div)`
+const Wrapper = styled(motion.div)<{ top: IDataProp["top"] }>`
   position: relative;
-  top: -100px;
+  top: ${(props) => (props.top ? `${props.top}px` : "")};
 `;
 const Row = styled(motion.span)`
   position: absolute;
@@ -112,7 +129,7 @@ const Row = styled(motion.span)`
   grid-template-columns: repeat(6, 1fr);
   gap: 10px;
   width: 100%;
-  padding: 0 50px;
+  padding: 0 60px;
 `;
 const Movie = styled(motion.div)<{ bgimage: string }>`
   background-image: url(${(props) => props.bgimage});
