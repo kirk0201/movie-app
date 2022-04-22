@@ -9,6 +9,7 @@ import styled from "styled-components";
 import { IMovie } from "../../api";
 import { getImagePath } from "../../utils";
 interface IMovieModalProp {
+  id: string;
   scrollY: MotionValue<number>;
   bigInfoData: "" | IMovie | undefined;
   overlayClickHandler: () => void;
@@ -20,6 +21,7 @@ function MovieModal({
   bigInfoData,
   overlayClickHandler,
   bigInfoMatch,
+  id,
 }: IMovieModalProp) {
   return (
     <AnimatePresence>
@@ -33,7 +35,7 @@ function MovieModal({
           />
           <BigInfo
             scroll={scrollY.get()}
-            layoutId={bigInfoMatch.params.movieId}
+            layoutId={bigInfoMatch.params.movieId + id}
           >
             {bigInfoData && (
               <>
@@ -72,6 +74,16 @@ const overlayVariant = {
     opacity: 0,
   },
 };
+const Overlay = styled(motion.div)`
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  opacity: 0;
+  z-index: 10;
+`;
 const BigInfo = styled(motion.div)<{ scroll: number }>`
   position: absolute;
   width: 40vw;
@@ -83,15 +95,9 @@ const BigInfo = styled(motion.div)<{ scroll: number }>`
   margin: 0 auto;
   border-radius: 15px;
   overflow: hidden;
+  z-index: 10;
 `;
-const Overlay = styled(motion.div)`
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  background-color: rgba(0, 0, 0, 0.8);
-  opacity: 0;
-`;
+
 const BigCover = styled.div`
   background-size: cover;
   background-position: center;
