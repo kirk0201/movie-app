@@ -2,13 +2,12 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { ThemeProvider, createGlobalStyle } from "styled-components";
 import { theme } from "./theme";
-
 import App from "./App";
 import { RecoilRoot } from "recoil";
 import { QueryClient, QueryClientProvider } from "react-query";
-
+import "./fonts/font.css";
 const GlobalStyle = createGlobalStyle`
-@import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400&display=swap');
+
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
@@ -26,7 +25,7 @@ time, mark, audio, video {
   padding: 0;
   border: 0;
   font-size: 100%;
-  font: inherit;
+  /* font: auto; */
   vertical-align: baseline;
 }
 /* HTML5 display-role reset for older browsers */
@@ -61,7 +60,7 @@ table {
 }
 body {
   font-weight: 300;
-  font-family: 'Source Sans Pro', sans-serif;
+  font-family: 'Source Sans Pro', sans-serif,  ;
   color: ${(props) => props.theme.white.darker};
   line-height: 1.2;
   background-color: black;
@@ -73,6 +72,7 @@ a {
   text-decoration:none;
   color:inherit;
 }
+
 `;
 const client = new QueryClient();
 const container = document.getElementById("root");

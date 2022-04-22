@@ -27,7 +27,6 @@ function RightArrow({ setIndex, data, setBack, leaving, toggle }: IArrowProp) {
   //   () => movieFetch("now_playing")
   // );
   // const toggleLeaving = () => setLeaving((prev) => !prev);
-
   const sliderNextHandler = () => {
     if (data) {
       if (leaving) return;
@@ -98,7 +97,7 @@ const ArrowSvg = styled(motion.svg)`
   position: absolute;
   width: 5vw;
   height: 5vh;
-  top: 130px;
+  top: 180px;
   right: 0;
   z-index: 100;
 `;

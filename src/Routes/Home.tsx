@@ -22,7 +22,6 @@ import Banner from "../Components/Home/Banner";
 import MovieModal from "../Components/Home/MovieModal";
 import Slider from "../Components/Home/Slider";
 import { useFindBigInfoMatch } from "../HOC";
-import { getImagePath, nextSlide, offset } from "../utils";
 
 function Home() {
   // recoil
@@ -41,23 +40,29 @@ function Home() {
   const { scrollY } = useViewportScroll();
 
   // useQuery
-  const { data: popular } = useQuery<INowPlaying>(["movies", "popular"], () =>
-    movieFetch("popular")
+  const { data: popular, isLoading: isPopular } = useQuery<INowPlaying>(
+    ["movies", "popular"],
+    () => movieFetch("popular")
   );
-  const { data: nowPlaying, isLoading } = useQuery<INowPlaying>(
+  const { data: nowPlaying, isLoading: isNow } = useQuery<INowPlaying>(
     ["movie", "nowplaying"],
     () => movieFetch("now_playing")
   );
-  const moviesData = [popular, nowPlaying];
+
+  const { bigInfoMatch: popularMatch, bigData: popularData } =
+    useFindBigInfoMatch("popular", popular);
+  const { bigInfoMatch: nowMatch, bigData: nowData } = useFindBigInfoMatch(
+    "nowplaying",
+    nowPlaying
+  );
 
   // const bigInfoData =
   //   bigInfoMatch?.params.movieId &&
-  //   nowPlaying?.results.find(
+  //   popular?.results.find(
   //     (movie) => movie.id + "" === bigInfoMatch.params.movieId
   //   );
   // console.log("bigInfoMatch", bigInfoMatch);
-  const test = useMatch(`movies/:keyword/:movieId`);
-  console.log("test", test);
+  // console.log("test", test);
 
   // const { bigInfo } = useFindBigInfoMatch("popular");
   // console.log("big", bigInfo);
@@ -66,7 +71,7 @@ function Home() {
   // console.log("bacK", back);
   // console.log("nowPlaying", nowPlaying);
   // console.log("popular", popular);
-
+  const isLoading = isPopular || isNow;
   return (
     <Wrapper>
       {isLoading ? (
@@ -74,24 +79,27 @@ function Home() {
       ) : (
         <>
           <Banner />
+
           <Slider
             id="popular"
+            keyword="인기 컨텐츠"
             data={popular}
-            top={-100}
+            top={0}
             back={back}
             setBack={setBack}
             index={popularIndex}
             setIndex={setPopularIndex}
           />
-
-          {/* <MovieModal
+          <MovieModal
+            id="popular"
             scrollY={scrollY}
-            bigInfoData={bigInfoData}
+            bigInfoData={popularData}
             overlayClickHandler={overlayClickHandler}
-            bigInfoMatch={bigInfoMatch}
-          /> */}
+            bigInfoMatch={popularMatch}
+          />
           <Slider
             id="nowplaying"
+            keyword="지금 상영중"
             data={nowPlaying}
             top={300}
             back={back}
@@ -99,12 +107,13 @@ function Home() {
             index={nowPlayingIndex}
             setIndex={setNowPlayingIndex}
           />
-          {/* <MovieModal
+          <MovieModal
+            id="nowplaying"
             scrollY={scrollY}
-            bigInfoData={bigInfoData}
+            bigInfoData={nowData}
             overlayClickHandler={overlayClickHandler}
-            bigInfoMatch={bigInfoMatch}
-          /> */}
+            bigInfoMatch={nowMatch}
+          />
         </>
       )}
     </Wrapper>
@@ -114,6 +123,7 @@ function Home() {
 /* Motion-Variant */
 
 /* Styled-Components */
+
 const Wrapper = styled.div``;
 const Loader = styled.div`
   display: flex;

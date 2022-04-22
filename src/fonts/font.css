@@ -1,0 +1,19 @@
+/* styled component에서 font지정시 createStyle 전역 설정안에
+설정시 랜더에 문제가 생기거나 적용이 제대로 되지 않기 때문에
+직접 따로 설정해야함
+    https://velog.io/@mokyoungg/Styled-Components-import-font2
+*/
+@import url("https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400&display=swap");
+
+@font-face {
+  font-family: "one-pop";
+  src: url("/src/fonts/one-pop.woff2");
+}
+@font-face {
+  font-family: "one-content";
+  src: url("/src/fonts/one-content.ttf");
+}
+@font-face {
+  font-family: "one-title";
+  src: url("/src/fonts/one-title.ttf");
+}

@@ -1,13 +1,19 @@
-import { useMatch } from "react-router-dom";
+import { PathMatch, useMatch } from "react-router-dom";
 import { INowPlaying } from "./api";
 
-export function useFindBigInfoMatch(keyword: string, data?: INowPlaying) {
-  const bigInfo = useMatch(`movies/:${keyword}/:movieId`);
+export function useFindBigInfoMatch(
+  // infoMatch: PathMatch<"keyword" | "movieId"> | null,
+  keyword: string,
+  queryData?: INowPlaying
+) {
+  const bigInfoMatch = useMatch(`movies/${keyword}/:movieId`);
 
   const bigData =
-    bigInfo?.params.movieId &&
-    data?.results.find((movie) => movie.id + "" === bigInfo.params.movieId);
-  return { bigInfo };
+    bigInfoMatch?.params.movieId &&
+    queryData?.results.find(
+      (movie) => movie.id + "" === bigInfoMatch.params.movieId
+    );
+  return { bigInfoMatch, bigData };
 }
 
 // import { useQuery } from "react-query";
