@@ -1,9 +1,11 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
+import ReactPlayer from "react-player";
 import { useQuery } from "react-query";
 import styled from "styled-components";
-import { INowPlaying, movieFetch } from "../../api";
-import { getImagePath } from "../../utils";
+import { getGenre, IGenre, INowPlaying, movieFetch } from "../../api";
+import { getImagePath, useGetGenreString } from "../../utils";
+import GenreBox from "../Common/GenreBox";
 
 function Banner() {
   const [hiddenContent, setContent] = useState(false);
@@ -12,6 +14,12 @@ function Banner() {
     ["movie", "nowplaying"],
     () => movieFetch("now_playing")
   );
+  const { data: genre } = useQuery<IGenre>("genre", getGenre);
+
+  // console.log("BannerData", data);
+  // console.log(genre);
+  console.log("test", useGetGenreString("popular"));
+  // Oerview 내용 요약 및 확대
   const splitOverVIewHandler = () => {
     const overView = data?.results[0].overview.replace("...", ".");
     const newOverView = overView?.split(".");
@@ -39,8 +47,32 @@ function Banner() {
   };
   return (
     <BannerImg bgImage={getImagePath(data?.results[0].backdrop_path!)}>
-      <Title>{data?.results[0].title}</Title>
-      {splitOverVIewHandler()}
+      <Col>
+        <Title>{data?.results[0].title}</Title>
+        <GenreBox />
+
+        {splitOverVIewHandler()}
+      </Col>
+      <Col>
+        <ReactPlayer
+          url={`https://www.youtube.com/watch?v=lV8MuZC_-Fo`}
+          // width="100%"
+          height="60vh"
+          style={{
+            position: "relative",
+            zIndex: 10,
+          }}
+          playing={true}
+          muted={true}
+          config={{
+            youtube: {
+              playerVars: {
+                showinfo: 1,
+              },
+            },
+          }}
+        />
+      </Col>
     </BannerImg>
   );
 }
@@ -57,11 +89,15 @@ const hiddenBtnVariant = {
   },
 };
 const BannerImg = styled.div<{ bgImage: string }>`
+  position: relative;
+  top: 0;
+  left: 0;
+  width: 100%;
   height: 100vh;
   display: flex;
   justify-content: center;
   padding: 60px;
-  flex-direction: column;
+  /* flex-direction: column; */
   background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1)),
     url(${(props) => props.bgImage});
 `;
@@ -70,14 +106,17 @@ const Title = styled.h1`
   font-weight: 600;
   margin-bottom: 10px;
 `;
-const Overview = styled.div``;
+const Overview = styled.div`
+  padding-top: 15px;
+`;
 const ShowContent = styled.p`
   font-size: 18px;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.6);
-  width: 40%;
+  width: 80%;
 `;
 const HiddenBtn = styled(motion.button)<{ hiddenprop: boolean | string }>`
+  position: relative;
   border-radius: 5px;
   border: none;
   background-repeat: no-repeat;
@@ -86,10 +125,17 @@ const HiddenBtn = styled(motion.button)<{ hiddenprop: boolean | string }>`
       ? `url("https://img.icons8.com/material-outlined/24/000000/collapse-arrow.png")`
       : `url("https://img.icons8.com/material-two-tone/24/000000/expand-arrow--v1.png")`};
   background-position: center;
-  width: 40%;
+  width: 80%;
   color: ${(props) => props.theme.black.darker};
   background-color: transparent;
   cursor: pointer;
   padding: 15px 10px;
+  z-index: 10;
+`;
+const Col = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 `;
 export default Banner;

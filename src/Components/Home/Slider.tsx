@@ -16,12 +16,22 @@ interface IDataProp {
   setIndex: SetterOrUpdater<number>;
   setBack: SetterOrUpdater<boolean>;
   id: string;
+  keyword: string;
 }
-function Slider({ id, data, top, back, index, setIndex, setBack }: IDataProp) {
+function Slider({
+  id,
+  data,
+  top,
+  back,
+  index,
+  setIndex,
+  setBack,
+  keyword,
+}: IDataProp) {
   const [leaving, setLeaving] = useRecoilState(motionLeave);
   const toggleLeaving = () => setLeaving((prev) => !prev);
   const navigate = useNavigate();
-
+  // console.log("leaving", leaving);
   const movieClickHandler = (movieId: string, id: string) => {
     navigate(`/movies/${id}/${movieId}`);
   };
@@ -41,7 +51,11 @@ function Slider({ id, data, top, back, index, setIndex, setBack }: IDataProp) {
         data={data}
         setBack={setBack}
       />
-      <AnimatePresence onExitComplete={toggleLeaving} custom={back}>
+      {/* onExitComplete에 toggleLeaving함수를 사용할 때 슬라이드 작동이 
+      멈추는 버그가 생겨 setLeaving으로 대체
+      */}
+      <AnimatePresence onExitComplete={() => setLeaving(false)} custom={back}>
+        <Keyword>{keyword}</Keyword>
         <Row
           custom={back}
           variants={sliderVariant}
@@ -82,6 +96,7 @@ function Slider({ id, data, top, back, index, setIndex, setBack }: IDataProp) {
     </Wrapper>
   );
 }
+/* Motion Variant */
 const sliderVariant = {
   normal: (back: boolean) => {
     return {
@@ -119,10 +134,21 @@ const movieVariant = {
     },
   },
 };
+/* Styled-component */
+const Keyword = styled.h1`
+  position: relative;
+  font-family: "one-pop";
+  color: #e73118;
+  top: -20px;
+  left: 60px;
+  font-weight: 300;
+  font-size: 52px;
+`;
 const Wrapper = styled(motion.div)<{ top: IDataProp["top"] }>`
   position: relative;
   top: ${(props) => (props.top ? `${props.top}px` : "")};
 `;
+
 const Row = styled(motion.span)`
   position: absolute;
   display: grid;
