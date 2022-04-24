@@ -10,7 +10,7 @@ import { useQuery } from "react-query";
 import { useMatch, useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
-import { INowPlaying, movieFetch } from "../api";
+import { IGetInfo, INowPlaying, movieFetch, getInfoFetch } from "../api";
 import {
   nowPlayingIndexState,
   popularIndexState,
@@ -101,7 +101,7 @@ function Home() {
             id="nowplaying"
             keyword="지금 상영중"
             data={nowPlaying}
-            top={300}
+            top={400}
             back={back}
             setBack={setBack}
             index={nowPlayingIndex}
