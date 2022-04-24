@@ -1,12 +1,16 @@
 import styled from "styled-components";
-import { useGetGenreString } from "../../utils";
-
-function GenreBox() {
-  const bannerGenre = useGetGenreString("popular");
+import { useGetGenreColor, useGetGenreString } from "../../utils";
+interface IGenreProp {
+  genreId: number[];
+}
+function GenreBox({ genreId }: IGenreProp) {
+  const bannerGenre = useGetGenreString(genreId);
   return (
     <Wrapper>
       {bannerGenre.map((box) => (
-        <Box key={box}>{box}</Box>
+        <Box key={box} genre={box}>
+          {box}
+        </Box>
       ))}
     </Wrapper>
   );
@@ -14,9 +18,12 @@ function GenreBox() {
 export default GenreBox;
 const Wrapper = styled.div`
   display: flex;
+  padding: 10px 0;
 `;
-const Box = styled.div`
-  padding: 5px 10px;
+const Box = styled.div<{ genre: string }>`
+  padding: 10px 20px;
+  border-radius: 10px;
   margin-right: 5px;
-  background-color: ${(props) => props.theme.black.lighter};
+  color: ${(props) => useGetGenreColor(props.genre)};
+  background-color: ${(props) => props.theme.black.veryDark};
 `;
