@@ -1,11 +1,13 @@
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ReactPlayer from "react-player";
 import { useQuery } from "react-query";
 import styled from "styled-components";
-import { getGenre, IGenre, INowPlaying, movieFetch } from "../../api";
-import { getImagePath, useGetGenreString } from "../../utils";
+import { getGenreFetch, IGenre, INowPlaying, movieFetch } from "../../api";
+import { getImagePath, useGetGenreString, useGetInfo } from "../../utils";
+import Adult from "../Common/Adult";
 import GenreBox from "../Common/GenreBox";
+import RuntimeBox from "../Common/RuntimeBox";
 
 function Banner() {
   const [hiddenContent, setContent] = useState(false);
@@ -14,11 +16,12 @@ function Banner() {
     ["movie", "nowplaying"],
     () => movieFetch("now_playing")
   );
-  const { data: genre } = useQuery<IGenre>("genre", getGenre);
+  const { data: genre } = useQuery<IGenre>("genre", getGenreFetch);
 
   // console.log("BannerData", data);
   // console.log(genre);
-  console.log("test", useGetGenreString("popular"));
+  // console.log("test", useGetGenreString("popular"));
+
   // Oerview 내용 요약 및 확대
   const splitOverVIewHandler = () => {
     const overView = data?.results[0].overview.replace("...", ".");
@@ -45,12 +48,28 @@ function Banner() {
       );
     }
   };
+  // useEffect(() => {
+  // const time = () => {
+  //   if (data) {
+  //     for (let i = 0; i < data.results.length; i++) {
+  //       ((x: number) =>
+  //         setTimeout(() => {
+  //           console.log(data?.results[i].title);
+  //         }, 10000 * x))(i);
+  //     }
+  //   }
+  // };
+  // }, [data]);
+  const bannerData = data?.results[0];
   return (
     <BannerImg bgImage={getImagePath(data?.results[0].backdrop_path!)}>
       <Col>
-        <Title>{data?.results[0].title}</Title>
-        <GenreBox />
-
+        <Title>
+          <Adult id={bannerData?.id + ""}></Adult>
+          {data?.results[0].title}
+          <RuntimeBox id={bannerData?.id + ""} />
+        </Title>
+        <GenreBox genreId={bannerData!.genre_ids} />
         {splitOverVIewHandler()}
       </Col>
       <Col>
@@ -138,4 +157,5 @@ const Col = styled.div`
   flex-direction: column;
   justify-content: center;
 `;
+const Director = styled.div``;
 export default Banner;
