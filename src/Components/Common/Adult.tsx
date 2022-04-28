@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { useGetInfo } from "../../utils";
+import { useGetInfo } from "../../HOC";
 import { IIdProp } from "./RuntimeBox";
 
 function Adult({ id }: IIdProp) {
@@ -7,7 +7,10 @@ function Adult({ id }: IIdProp) {
 }
 export default Adult;
 const Wrapper = styled.span`
-  padding: 5px 15px;
+  font-weight: 700;
+  font-size: 32px;
+  position: relative;
+  padding: 5px 10px;
   background-color: red;
   border-radius: 70%;
 `;

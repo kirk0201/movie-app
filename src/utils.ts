@@ -13,7 +13,9 @@ import {
 
 // slide에 표현할 영화 수
 export const offset = 6;
-
+export function useGetVoteColor(n: number) {
+  if (n >= 9) return "";
+}
 export function getImagePath(id: string, size?: string) {
   return `https://image.tmdb.org/t/p/${size ? size : "original"}${id}`;
 }
@@ -73,15 +75,6 @@ export function useGetCredit(movieId: string) {
       data?.cast.slice(0, 10).map((act: any) => act)
     );
     return data?.cast.slice(0, 10).map((act: any) => act);
-  }
-}
-export function useGetInfo(id: string, keyword: string) {
-  const { data: getInfo } = useQuery<IGetInfo | any>(
-    ["movieInfo", "info"],
-    () => getInfoFetch(`${id}`)
-  );
-  if (getInfo) {
-    return getInfo[keyword];
   }
 }
 

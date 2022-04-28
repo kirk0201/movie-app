@@ -1,5 +1,6 @@
+import { useQuery } from "react-query";
 import { PathMatch, useMatch } from "react-router-dom";
-import { INowPlaying } from "./api";
+import { getInfoFetch, IGetInfo, INowPlaying } from "./api";
 
 export function useFindBigInfoMatch(
   // infoMatch: PathMatch<"keyword" | "movieId"> | null,
@@ -15,7 +16,16 @@ export function useFindBigInfoMatch(
     );
   return { bigInfoMatch, bigData };
 }
-
+export function useGetInfo(id: string, keyword: string) {
+  const { data: getInfo, isLoading: loading } = useQuery<IGetInfo | any>(
+    [`movieInfo${keyword}`, `${keyword}`],
+    () => getInfoFetch(`${id}`)
+  );
+  if (!loading) {
+    console.log("fetchgetInfo", getInfo);
+    return getInfo[keyword];
+  }
+}
 // import { useQuery } from "react-query";
 // import { RecoilState, SetterOrUpdater, useRecoilState } from "recoil";
 // import { INowPlaying, movieFetch } from "./api";

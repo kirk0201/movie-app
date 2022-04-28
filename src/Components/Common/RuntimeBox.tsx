@@ -1,5 +1,6 @@
+import { useEffect } from "react";
 import styled from "styled-components";
-import { useGetInfo } from "../../utils";
+import { useGetInfo } from "../../HOC";
 
 export interface IIdProp {
   id: string;

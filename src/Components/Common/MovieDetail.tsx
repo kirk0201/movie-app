@@ -6,7 +6,7 @@ interface IMovieProps {
   data: IMovie;
   long: boolean;
 }
-function MovieDetail({ id, data, long }: IMovieProps) {
+function MovieDetail({ data, long }: IMovieProps) {
   return (
     <BigOverview isLongTitle={long}>
       <GenreBox genreId={data.genre_ids} />

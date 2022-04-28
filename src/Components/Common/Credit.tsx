@@ -25,25 +25,28 @@ export default Credit;
 
 const Wrapper = styled.div`
   position: relative;
+  height: 100%;
   top: -50px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 10px;
   background-color: transparent;
-  height: 100%;
   padding: 0 10px;
   background-position: center;
 `;
 const Image = styled.div<{ image?: string }>`
   box-shadow: 2px, 2px, 3px, red;
   background: url(${(props) => props.image});
-  background-size: contain;
+  background-size: auto;
+  height: 200px;
   background-repeat: no-repeat;
+  background-position: center;
   display: flex;
-  /* justify-content: center; */
   align-items: flex-end;
 `;
-
+const Container = styled.div`
+  position: relative;
+`;
 const Item = styled.div`
   position: relative;
   width: 50%;

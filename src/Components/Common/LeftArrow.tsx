@@ -77,5 +77,6 @@ const ArrowSvg = styled(motion.svg)`
   top: 180px;
   z-index: 100;
   left: 0;
+  cursor: pointer;
 `;
 export default LeftArrow;
