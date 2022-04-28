@@ -97,8 +97,9 @@ const ArrowSvg = styled(motion.svg)`
   position: absolute;
   width: 5vw;
   height: 5vh;
-  top: 180px;
+  top: 210px;
   right: 0;
   z-index: 100;
+  cursor: pointer;
 `;
 export default RightArrow;

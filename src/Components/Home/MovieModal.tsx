@@ -4,20 +4,25 @@ import {
   MotionValue,
   useViewportScroll,
 } from "framer-motion";
+import { useEffect } from "react";
 import { useState } from "react";
 import { PathMatch, useMatch } from "react-router-dom";
+import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import { IMovie } from "../../api";
+import { movieNavState } from "../../atoms";
+import { useGetMovie } from "../../HOC";
 import { getImagePath } from "../../utils";
 import Adult from "../Common/Adult";
 import Credit from "../Common/Credit";
 import GenreBox from "../Common/GenreBox";
 import MovieDetail from "../Common/MovieDetail";
 import RuntimeBox from "../Common/RuntimeBox";
+import VoteAverage from "../Common/VoteAverage";
 interface IMovieModalProp {
   id: string;
   scrollY: MotionValue<number>;
-  bigInfoData: "" | IMovie | undefined;
+  bigInfoData: IMovie | "" | undefined;
   overlayClickHandler: () => void;
   bigInfoMatch: PathMatch<"movieId"> | null;
 }
@@ -29,11 +34,12 @@ function MovieModal({
   bigInfoMatch,
   id,
 }: IMovieModalProp) {
-  const [movieNav, setMovieNav] = useState(0);
+  const [movieNav, setMovieNav] = useRecoilState(movieNavState);
+
+  const movieId = bigInfoMatch?.params.movieId;
 
   let long = false;
-  console.log("bigInfoData", bigInfoData);
-  return (
+  return bigInfoData ? (
     <AnimatePresence>
       {bigInfoMatch ? (
         <>
@@ -60,8 +66,16 @@ function MovieModal({
                 {bigInfoData.title.indexOf(":") !== -1 ? (
                   <>
                     {(long = true)}
-                    <Adult id={bigInfoData.id + ""} />
+                    <Vote long={long}>
+                      <VoteAverage
+                        id={bigInfoData.id + ""}
+                        adult={bigInfoData.adult}
+                        display="absolute"
+                        long={long}
+                      />
+                    </Vote>
                     <BigTitle style={{ top: "-100px" }}>
+                      <Adult id={bigInfoData.id + ""} />
                       {bigInfoData.title.split(":")[0]}
                     </BigTitle>
                     <SmallTitle>
@@ -71,28 +85,38 @@ function MovieModal({
                   </>
                 ) : (
                   <BigTitle>
+                    <Vote>
+                      <VoteAverage
+                        id={bigInfoData.id + ""}
+                        adult={bigInfoData.adult}
+                        display="absolute"
+                        long={long}
+                      />
+                    </Vote>
                     {(long = false)}
+                    <Adult id={id + ""} />
                     {bigInfoData.title}
                     <RuntimeBox id={bigInfoData.id + ""} />
                   </BigTitle>
                 )}
                 <NavInfo long={long}>
-                  <InfoMenu onClick={() => setMovieNav(0)}>상세정보</InfoMenu>
+                  <InfoMenu onClick={() => setMovieNav("0")}>상세정보</InfoMenu>
 
-                  <InfoMenu onClick={() => setMovieNav(1)}>등장인물</InfoMenu>
-                  <InfoMenu onClick={() => setMovieNav(2)}>
+                  <InfoMenu onClick={() => setMovieNav("1")}>등장인물</InfoMenu>
+                  <InfoMenu onClick={() => setMovieNav("2")}>
                     비슷한 컨텐츠
                   </InfoMenu>
                 </NavInfo>
                 <NavContent>
-                  {movieNav === 0 && (
+                  {movieNav === "0" && (
                     <MovieDetail
                       id={bigInfoData.id + ""}
                       long={long}
                       data={bigInfoData}
+                      movieId={movieId}
                     />
                   )}
-                  {movieNav === 1 && <Credit id={bigInfoData.id + ""} />}
+                  {movieNav === "1" && <Credit id={bigInfoData.id + ""} />}
                 </NavContent>
               </Wrapper>
             )}
@@ -100,7 +124,7 @@ function MovieModal({
         </>
       ) : null}
     </AnimatePresence>
-  );
+  ) : null;
 }
 const overlayVariant = {
   action: {
@@ -123,15 +147,15 @@ const Overlay = styled(motion.div)`
 const BigInfo = styled(motion.div)<{ scroll: number }>`
   position: absolute;
   width: 40vw;
-  height: 70vh;
   background-color: ${(props) => props.theme.black.lighter};
   top: ${(props) => props.scroll + 80 + "px"};
   left: 0;
   right: 0;
   margin: 0 auto;
   border-radius: 15px;
-  overflow: hidden;
   z-index: 10;
+  overflow: hidden;
+  transform-origin: translateY(top);
 `;
 
 const BigCover = styled.div`
@@ -139,7 +163,13 @@ const BigCover = styled.div`
   background-position: center;
   width: 100%;
   height: 300px;
+
   position: relative;
+`;
+const Vote = styled.div<{ long?: boolean }>`
+  position: relative;
+  top: -30px;
+  left: ${(props) => (props.long ? "20px" : "")};
 `;
 const BigTitle = styled.h3`
   /* display: flex; */
@@ -161,10 +191,14 @@ const NavInfo = styled.nav<{ long: boolean }>`
   width: 100%;
   justify-content: space-around;
   position: relative;
+  padding: 0 10px;
+
   top: ${(props) => (props.long ? "-80px" : "-50px")};
 `;
 const InfoMenu = styled.div`
   cursor: pointer;
+  width: 100%;
+  text-align: center;
   background-color: tranparent;
   padding: 10px 20px;
   &:hover {
@@ -172,13 +206,11 @@ const InfoMenu = styled.div`
   }
 `;
 const NavContent = styled.div`
-  height: 100%;
+  height: 400px;
   display: flex;
   justify-content: center;
 `;
 const Wrapper = styled.div`
-  height: 100%;
   position: relative;
-  overflow-x: hidden;
 `;
 export default MovieModal;

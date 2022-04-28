@@ -1,13 +1,15 @@
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import ReactPlayer from "react-player";
 import { useQuery } from "react-query";
 import styled from "styled-components";
-import { getGenreFetch, IGenre, INowPlaying, movieFetch } from "../../api";
-import { getImagePath, useGetGenreString, useGetInfo } from "../../utils";
+import { INowPlaying, movieFetch } from "../../api";
+import { useGetMovie } from "../../HOC";
+import { getImagePath } from "../../utils";
 import Adult from "../Common/Adult";
 import GenreBox from "../Common/GenreBox";
 import RuntimeBox from "../Common/RuntimeBox";
+import VoteAverage from "../Common/VoteAverage";
 
 function Banner() {
   const [hiddenContent, setContent] = useState(false);
@@ -16,11 +18,6 @@ function Banner() {
     ["movie", "nowplaying"],
     () => movieFetch("now_playing")
   );
-  const { data: genre } = useQuery<IGenre>("genre", getGenreFetch);
-
-  // console.log("BannerData", data);
-  // console.log(genre);
-  // console.log("test", useGetGenreString("popular"));
 
   // Oerview 내용 요약 및 확대
   const splitOverVIewHandler = () => {
@@ -48,34 +45,35 @@ function Banner() {
       );
     }
   };
-  // useEffect(() => {
-  // const time = () => {
-  //   if (data) {
-  //     for (let i = 0; i < data.results.length; i++) {
-  //       ((x: number) =>
-  //         setTimeout(() => {
-  //           console.log(data?.results[i].title);
-  //         }, 10000 * x))(i);
-  //     }
-  //   }
-  // };
-  // }, [data]);
   const bannerData = data?.results[0];
-  return (
+  const getMovie = useGetMovie(data?.results[0].id + "");
+  console.log("getMovie", getMovie);
+
+  return data ? (
     <BannerImg bgImage={getImagePath(data?.results[0].backdrop_path!)}>
       <Col>
-        <Title>
-          <Adult id={bannerData?.id + ""}></Adult>
-          {data?.results[0].title}
-          <RuntimeBox id={bannerData?.id + ""} />
-        </Title>
-        <GenreBox genreId={bannerData!.genre_ids} />
+        <Row>
+          <Vote>
+            <VoteAverage
+              id={bannerData!.id + ""}
+              adult={bannerData?.adult}
+              display="relative"
+            />
+          </Vote>
+          <Title>
+            <Adult id={bannerData?.id + ""}></Adult>
+            {data?.results[0].title}
+            <RuntimeBox id={414906 + ""} />
+          </Title>
+        </Row>
+        <GenreBox genreId={bannerData!.genre_ids}></GenreBox>
+
         {splitOverVIewHandler()}
       </Col>
       <Col>
         <ReactPlayer
-          url={`https://www.youtube.com/watch?v=lV8MuZC_-Fo`}
-          // width="100%"
+          url={getMovie}
+          width="60vw"
           height="60vh"
           style={{
             position: "relative",
@@ -83,6 +81,7 @@ function Banner() {
           }}
           playing={true}
           muted={true}
+          controls={true}
           config={{
             youtube: {
               playerVars: {
@@ -93,7 +92,7 @@ function Banner() {
         />
       </Col>
     </BannerImg>
-  );
+  ) : null;
 }
 const hiddenBtnVariant = {
   normal: {
@@ -107,6 +106,7 @@ const hiddenBtnVariant = {
     },
   },
 };
+
 const BannerImg = styled.div<{ bgImage: string }>`
   position: relative;
   top: 0;
@@ -116,7 +116,6 @@ const BannerImg = styled.div<{ bgImage: string }>`
   display: flex;
   justify-content: center;
   padding: 60px;
-  /* flex-direction: column; */
   background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1)),
     url(${(props) => props.bgImage});
 `;
@@ -129,7 +128,7 @@ const Overview = styled.div`
   padding-top: 15px;
 `;
 const ShowContent = styled.p`
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.6);
   width: 80%;
@@ -152,10 +151,12 @@ const HiddenBtn = styled(motion.button)<{ hiddenprop: boolean | string }>`
   z-index: 10;
 `;
 const Col = styled.div`
-  flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  flex: auto;
 `;
-const Director = styled.div``;
+
+const Row = styled.div``;
+const Vote = styled.div``;
 export default Banner;
