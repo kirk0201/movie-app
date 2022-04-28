@@ -25,14 +25,14 @@ export default Credit;
 
 const Wrapper = styled.div`
   position: relative;
-  height: 100%;
+  width: 100%;
   overflow-y: scroll;
   top: -50px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
+  gap: 50px;
   background-color: transparent;
-  padding: 20px 10px;
+  padding: 20px 50px;
   background-position: center;
 `;
 const Image = styled.div<{ image?: string }>`
