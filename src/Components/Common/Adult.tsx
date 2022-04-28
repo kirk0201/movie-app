@@ -3,7 +3,7 @@ import { useGetInfo } from "../../HOC";
 import { IIdProp } from "./RuntimeBox";
 
 function Adult({ id }: IIdProp) {
-  return <>{useGetInfo(id, "adult") && <Wrapper>19</Wrapper>}</>;
+  return <>{useGetInfo(id, "adult") ? <Wrapper>19</Wrapper> : null}</>;
 }
 export default Adult;
 const Wrapper = styled.span`

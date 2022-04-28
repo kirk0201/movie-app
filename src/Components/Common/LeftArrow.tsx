@@ -74,7 +74,7 @@ const ArrowSvg = styled(motion.svg)`
   position: absolute;
   width: 5vw;
   height: 5vh;
-  top: 180px;
+  top: 210px;
   z-index: 100;
   left: 0;
   cursor: pointer;

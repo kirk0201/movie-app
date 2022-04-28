@@ -4,6 +4,7 @@ import ReactPlayer from "react-player";
 import { useQuery } from "react-query";
 import styled from "styled-components";
 import { INowPlaying, movieFetch } from "../../api";
+import { useGetMovie } from "../../HOC";
 import { getImagePath } from "../../utils";
 import Adult from "../Common/Adult";
 import GenreBox from "../Common/GenreBox";
@@ -45,15 +46,20 @@ function Banner() {
     }
   };
   const bannerData = data?.results[0];
+  const getMovie = useGetMovie(data?.results[0].id + "");
+  console.log("getMovie", getMovie);
 
   return data ? (
     <BannerImg bgImage={getImagePath(data?.results[0].backdrop_path!)}>
       <Col>
         <Row>
-          <VoteAverage
-            id={bannerData!.id + ""}
-            adult={bannerData!.adult}
-          ></VoteAverage>
+          <Vote>
+            <VoteAverage
+              id={bannerData!.id + ""}
+              adult={bannerData?.adult}
+              display="relative"
+            />
+          </Vote>
           <Title>
             <Adult id={bannerData?.id + ""}></Adult>
             {data?.results[0].title}
@@ -66,7 +72,7 @@ function Banner() {
       </Col>
       <Col>
         <ReactPlayer
-          url={`https://www.youtube.com/watch?v=lV8MuZC_-Fo`}
+          url={getMovie}
           width="60vw"
           height="60vh"
           style={{
@@ -75,6 +81,7 @@ function Banner() {
           }}
           playing={true}
           muted={true}
+          controls={true}
           config={{
             youtube: {
               playerVars: {
@@ -99,6 +106,7 @@ const hiddenBtnVariant = {
     },
   },
 };
+
 const BannerImg = styled.div<{ bgImage: string }>`
   position: relative;
   top: 0;
@@ -150,4 +158,5 @@ const Col = styled.div`
 `;
 
 const Row = styled.div``;
+const Vote = styled.div``;
 export default Banner;

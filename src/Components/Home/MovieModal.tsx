@@ -11,6 +11,7 @@ import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import { IMovie } from "../../api";
 import { movieNavState } from "../../atoms";
+import { useGetMovie } from "../../HOC";
 import { getImagePath } from "../../utils";
 import Adult from "../Common/Adult";
 import Credit from "../Common/Credit";
@@ -34,6 +35,8 @@ function MovieModal({
   id,
 }: IMovieModalProp) {
   const [movieNav, setMovieNav] = useRecoilState(movieNavState);
+
+  const movieId = bigInfoMatch?.params.movieId;
 
   let long = false;
   return bigInfoData ? (
@@ -63,11 +66,15 @@ function MovieModal({
                 {bigInfoData.title.indexOf(":") !== -1 ? (
                   <>
                     {(long = true)}
-                    <BigTitle style={{ top: "-130px" }}>
+                    <Vote long={long}>
                       <VoteAverage
                         id={bigInfoData.id + ""}
                         adult={bigInfoData.adult}
+                        display="absolute"
+                        long={long}
                       />
+                    </Vote>
+                    <BigTitle style={{ top: "-100px" }}>
                       <Adult id={bigInfoData.id + ""} />
                       {bigInfoData.title.split(":")[0]}
                     </BigTitle>
@@ -78,10 +85,14 @@ function MovieModal({
                   </>
                 ) : (
                   <BigTitle>
-                    <VoteAverage
-                      id={bigInfoData.id + ""}
-                      adult={bigInfoData.adult}
-                    />
+                    <Vote>
+                      <VoteAverage
+                        id={bigInfoData.id + ""}
+                        adult={bigInfoData.adult}
+                        display="absolute"
+                        long={long}
+                      />
+                    </Vote>
                     {(long = false)}
                     <Adult id={id + ""} />
                     {bigInfoData.title}
@@ -102,6 +113,7 @@ function MovieModal({
                       id={bigInfoData.id + ""}
                       long={long}
                       data={bigInfoData}
+                      movieId={movieId}
                     />
                   )}
                   {movieNav === "1" && <Credit id={bigInfoData.id + ""} />}
@@ -154,10 +166,15 @@ const BigCover = styled.div`
 
   position: relative;
 `;
+const Vote = styled.div<{ long?: boolean }>`
+  position: relative;
+  top: -30px;
+  left: ${(props) => (props.long ? "20px" : "")};
+`;
 const BigTitle = styled.h3`
   /* display: flex; */
   position: relative;
-  top: -90px;
+  top: -60px;
   font-size: 48px;
   font-weight: 700;
   left: 20px;
@@ -166,7 +183,7 @@ const BigTitle = styled.h3`
 const SmallTitle = styled(BigTitle)`
   display: flex;
   font-size: 24px;
-  top: -130px;
+  top: -100px;
 `;
 
 const NavInfo = styled.nav<{ long: boolean }>`
@@ -174,11 +191,14 @@ const NavInfo = styled.nav<{ long: boolean }>`
   width: 100%;
   justify-content: space-around;
   position: relative;
+  padding: 0 10px;
 
-  top: ${(props) => (props.long ? "-110px" : "-80px")};
+  top: ${(props) => (props.long ? "-80px" : "-50px")};
 `;
 const InfoMenu = styled.div`
   cursor: pointer;
+  width: 100%;
+  text-align: center;
   background-color: tranparent;
   padding: 10px 20px;
   &:hover {
@@ -186,12 +206,11 @@ const InfoMenu = styled.div`
   }
 `;
 const NavContent = styled.div`
-  height: 100%;
+  height: 400px;
   display: flex;
   justify-content: center;
 `;
 const Wrapper = styled.div`
-  height: 100%;
   position: relative;
 `;
 export default MovieModal;

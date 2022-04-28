@@ -70,27 +70,32 @@ function Slider({
             .slice(offset * index, offset * index + offset)
             .map((movie) => {
               return (
-                <Movie
-                  layoutId={movie.id + id}
-                  key={movie.id + id}
-                  // onClick={() => movieClickHandler(movie.id + "")}
-                  onClick={() => movieClickHandler(movie.id + "", id)}
-                  variants={movieVariant}
-                  initial="initial"
-                  whileHover="hover"
-                  bgimage={getImagePath(movie.poster_path, "w300")}
-                  transition={{ type: "tween" }}
-                >
-                  {console.log("movie.id : ", movie.id)}
-                  <VoteAverage id={movie.id + ""} />
-                  <Info variants={infoVariant}>
-                    {movie.title.indexOf(":") !== -1 ? (
-                      <h4>{movie.title.split(":")[0]}</h4>
-                    ) : (
-                      <h4>{movie.title}</h4>
-                    )}
-                  </Info>
-                </Movie>
+                <MovieWrapper key={movie + ""}>
+                  <Vote>
+                    <VoteAverage id={movie.id + ""} display="relative" />
+                  </Vote>
+
+                  <Movie
+                    layoutId={movie.id + id}
+                    key={movie.id + id}
+                    // onClick={() => movieClickHandler(movie.id + "")}
+                    onClick={() => movieClickHandler(movie.id + "", id)}
+                    variants={movieVariant}
+                    initial="initial"
+                    whileHover="hover"
+                    bgimage={getImagePath(movie.poster_path, "w300")}
+                    transition={{ type: "tween" }}
+                  >
+                    {console.log("movie.id : ", movie.id)}
+                    <Info variants={infoVariant}>
+                      {movie.title.indexOf(":") !== -1 ? (
+                        <h4>{movie.title.split(":")[0]}</h4>
+                      ) : (
+                        <h4>{movie.title}</h4>
+                      )}
+                    </Info>
+                  </Movie>
+                </MovieWrapper>
               );
             })}
         </Row>
@@ -159,6 +164,11 @@ const Row = styled(motion.span)`
   gap: 10px;
   width: 100%;
   padding: 0 60px;
+`;
+const MovieWrapper = styled(motion.div)``;
+const Vote = styled.div`
+  display: flex;
+  justify-content: center;
 `;
 const Movie = styled(motion.div)<{ bgimage: string }>`
   background-image: url(${(props) => props.bgimage});

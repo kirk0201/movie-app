@@ -18,7 +18,7 @@ function GenreBox({ genreId }: IGenreProp) {
 export default GenreBox;
 const Wrapper = styled.div`
   display: flex;
-  padding: 10px 0;
+  padding: 10px 20px;
 `;
 const Box = styled.div<{ genre: string }>`
   padding: 10px 20px;

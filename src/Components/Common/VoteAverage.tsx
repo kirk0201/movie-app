@@ -1,36 +1,45 @@
-import { filterProps } from "framer-motion";
+import { filterProps, motion } from "framer-motion";
 import styled from "styled-components";
 import { useGetInfo } from "../../HOC";
 
 interface IVoteProp {
   id: string;
   adult?: boolean | undefined;
+  display?: "relative" | "absolute";
+  long?: boolean;
 }
-function VoteAverage({ id, adult }: IVoteProp) {
+function VoteAverage({ id, adult, display, long }: IVoteProp) {
   const vote_average = useGetInfo(id, "vote_average");
   //   const vote = Number(vote_average);
-  console.log(vote_average);
+  console.log("infoFetch", vote_average);
+  console.log("type", typeof adult);
   return (
-    <Wrapper vote={vote_average} adult={adult}>
-      {vote_average}
+    <Wrapper
+      vote={vote_average}
+      long={long}
+      adult={Boolean(adult)}
+      display={display}
+    >
+      ⭐{vote_average}
     </Wrapper>
   );
 }
 export default VoteAverage;
 
-const Wrapper = styled.div<{
+const Wrapper = styled(motion.span)<{
   vote: number | undefined;
   adult: boolean | undefined;
+  display?: string;
+  long?: boolean;
 }>`
-  text-align: center;
-  position: relative;
-  width: 5vw;
-  left: ${(props) => (props.adult ? "60px" : "")};
+  top: ${(props) => (props.long ? "-100px" : "")};
+  position: ${(props) => props.display};
+  left: ${(props) => (props.adult === true ? "60px" : "")};
   font-size: 20px;
   border-radius: 10px;
   padding: 5px 10px;
   font-weight: 700;
-  background-color: grey;
+  background-color: rgba(255, 255, 255, 0.2);
   color: ${(props) =>
     props.vote! >= 9
       ? props.theme.voteUp.veryDark
