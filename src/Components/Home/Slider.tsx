@@ -1,4 +1,3 @@
-
 import { AnimatePresence, motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { SetterOrUpdater, useRecoilState } from "recoil";
@@ -8,6 +7,7 @@ import { motionLeave } from "../../atoms";
 import { getImagePath, offset } from "../../utils";
 import LeftArrow from "../Common/LeftArrow";
 import RightArrow from "../Common/RightArrow";
+import VoteAverage from "../Common/VoteAverage";
 
 interface IDataProp {
   data?: INowPlaying;
@@ -32,7 +32,6 @@ function Slider({
   const [leaving, setLeaving] = useRecoilState(motionLeave);
   const toggleLeaving = () => setLeaving((prev) => !prev);
   const navigate = useNavigate();
-  // console.log("leaving", leaving);
   const movieClickHandler = (movieId: string, id: string) => {
     navigate(`/movies/${id}/${movieId}`);
   };
@@ -71,25 +70,32 @@ function Slider({
             .slice(offset * index, offset * index + offset)
             .map((movie) => {
               return (
-                <Movie
-                  layoutId={movie.id + id}
-                  key={movie.id + id}
-                  // onClick={() => movieClickHandler(movie.id + "")}
-                  onClick={() => movieClickHandler(movie.id + "", id)}
-                  variants={movieVariant}
-                  initial="initial"
-                  whileHover="hover"
-                  bgimage={getImagePath(movie.poster_path, "w300")}
-                  transition={{ type: "tween" }}
-                >
-                  <Info variants={infoVariant}>
-                    {movie.title.indexOf(":") !== -1 ? (
-                      <h4>{movie.title.split(":")[0]}</h4>
-                    ) : (
-                      <h4>{movie.title}</h4>
-                    )}
-                  </Info>
-                </Movie>
+                <MovieWrapper key={movie + ""}>
+                  <Vote>
+                    <VoteAverage id={movie.id + ""} display="relative" />
+                  </Vote>
+
+                  <Movie
+                    layoutId={movie.id + id}
+                    key={movie.id + id}
+                    // onClick={() => movieClickHandler(movie.id + "")}
+                    onClick={() => movieClickHandler(movie.id + "", id)}
+                    variants={movieVariant}
+                    initial="initial"
+                    whileHover="hover"
+                    bgimage={getImagePath(movie.poster_path, "w300")}
+                    transition={{ type: "tween" }}
+                  >
+                    {console.log("movie.id : ", movie.id)}
+                    <Info variants={infoVariant}>
+                      {movie.title.indexOf(":") !== -1 ? (
+                        <h4>{movie.title.split(":")[0]}</h4>
+                      ) : (
+                        <h4>{movie.title}</h4>
+                      )}
+                    </Info>
+                  </Movie>
+                </MovieWrapper>
               );
             })}
         </Row>
@@ -151,12 +157,18 @@ const Wrapper = styled(motion.div)<{ top: IDataProp["top"] }>`
 `;
 
 const Row = styled(motion.span)`
+  cursor: pointer;
   position: absolute;
   display: grid;
   grid-template-columns: repeat(6, 1fr);
   gap: 10px;
   width: 100%;
   padding: 0 60px;
+`;
+const MovieWrapper = styled(motion.div)``;
+const Vote = styled.div`
+  display: flex;
+  justify-content: center;
 `;
 const Movie = styled(motion.div)<{ bgimage: string }>`
   background-image: url(${(props) => props.bgimage});
@@ -170,15 +182,17 @@ const Movie = styled(motion.div)<{ bgimage: string }>`
   &:last-child {
     transform-origin: right;
   } */
+  display: flex;
+  justify-content: center;
 `;
-const Info = styled(motion.div)`
+const Info = styled(motion.span)`
   position: absolute;
   bottom: 0;
-  overflow: hidden;
-  /* background-color: ${(props) => props.theme.black.lighter}; */
   background-color: rgba(0, 0, 0, 0.6);
-  width: 100%;
+  width: 90%;
+
   opacity: 0;
+  text-align: center;
   h4 {
     text-align: center;
     font-size: 24px;

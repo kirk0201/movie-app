@@ -1,5 +1,14 @@
+import { useEffect } from "react";
+import { useState } from "react";
+import { useQuery } from "react-query";
 import { PathMatch, useMatch } from "react-router-dom";
-import { INowPlaying } from "./api";
+import {
+  getInfoFetch,
+  getMovieFetch,
+  IGetInfo,
+  IGetMovie,
+  INowPlaying,
+} from "./api";
 
 export function useFindBigInfoMatch(
   // infoMatch: PathMatch<"keyword" | "movieId"> | null,
@@ -15,7 +24,30 @@ export function useFindBigInfoMatch(
     );
   return { bigInfoMatch, bigData };
 }
+export function useGetInfo(id: string, keyword: string) {
+  const { data: getInfo, isLoading: loading } = useQuery<IGetInfo | any>(
+    [`${id}`, `${keyword}`],
+    () => getInfoFetch(`${id}`)
+  );
+  if (!loading) {
+    console.log("fetchgetInfo", getInfo);
+    return getInfo[keyword];
+  }
+}
 
+export function useGetMovie(id: string) {
+  const { data: movieData, isLoading: loading } = useQuery<IGetMovie>(
+    [`video${id}`],
+    () => getMovieFetch(id)
+  );
+  if (!loading) {
+    const movieArray: string[] = [];
+    const BASE_URL = "https://www.youtube.com/watch/";
+
+    movieData?.results.map((n) => movieArray.push(`${BASE_URL}${n.key}`));
+    return movieArray;
+  }
+}
 // import { useQuery } from "react-query";
 // import { RecoilState, SetterOrUpdater, useRecoilState } from "recoil";
 // import { INowPlaying, movieFetch } from "./api";

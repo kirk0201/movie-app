@@ -133,10 +133,12 @@ export function getGenreFetch() {
 }
 
 // Fetch: 상세 정보
-// https://api.themoviedb.org/3/movie/634649?api_key=25b03f239fa8301a3515814d1f51fe11&language=ko-kr
-export function getInfoFetch(movieId: string | number) {
-  const QUICK_URL = `${BASE_URL}movie/${movieId}?api_key=${API_KEY}&language=ko-kr`;
-  return fetch(QUICK_URL).then((res) => res.json());
+// https://api.themoviedb.org/3/movie/634649(스파이더맨)?api_key=25b03f239fa8301a3515814d1f51fe11&language=ko-kr
+export async function getInfoFetch(movieId: string | number) {
+  const QUICK_URL =
+    await `${BASE_URL}movie/${movieId}?api_key=${API_KEY}&language=ko-kr`;
+  const res = await fetch(QUICK_URL);
+  return await res.json();
 }
 
 // Fetch: Credit 정보

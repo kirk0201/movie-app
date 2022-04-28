@@ -12,5 +12,15 @@ declare module "styled-components" {
       darker: string;
       lighter: string;
     };
+    voteDown: {
+      lighter: string;
+      darker: string;
+      veryDark: string;
+    };
+    voteUp: {
+      lighter: string;
+      darker: string;
+      veryDark: string;
+    };
   }
 }

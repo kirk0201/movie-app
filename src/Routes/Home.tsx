@@ -8,10 +8,11 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { useQuery } from "react-query";
 import { useMatch, useNavigate } from "react-router-dom";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import { IGetInfo, INowPlaying, movieFetch, getInfoFetch } from "../api";
 import {
+  movieNavState,
   nowPlayingIndexState,
   popularIndexState,
   slideDirectionBack,
@@ -29,11 +30,13 @@ function Home() {
   const [nowPlayingIndex, setNowPlayingIndex] =
     useRecoilState(nowPlayingIndexState);
   const [back, setBack] = useRecoilState(slideDirectionBack);
+  const setMovieNav = useSetRecoilState(movieNavState);
   // react-router-dom
   const navigate = useNavigate();
   // const bigInfoMatch = useMatch("movies/:movieId");
   const overlayClickHandler = () => {
     navigate("/");
+    setMovieNav("0");
   };
 
   // framer-motion
@@ -51,10 +54,12 @@ function Home() {
 
   const { bigInfoMatch: popularMatch, bigData: popularData } =
     useFindBigInfoMatch("popular", popular);
+  console.log("popularUSE DATA", popularMatch, popularData);
   const { bigInfoMatch: nowMatch, bigData: nowData } = useFindBigInfoMatch(
     "nowplaying",
     nowPlaying
   );
+  console.log("nowPlayingUSE DATA", nowMatch, nowData);
 
   // const bigInfoData =
   //   bigInfoMatch?.params.movieId &&

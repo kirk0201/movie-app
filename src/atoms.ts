@@ -17,3 +17,8 @@ export const slideDirectionBack = atom<boolean>({
   key: "slideback",
   default: false,
 });
+
+export const movieNavState = atom<"0" | "1" | "2">({
+  key: "movieNav",
+  default: "0",
+});
